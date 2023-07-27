@@ -11,27 +11,30 @@ require("yaml")
 
 # Parametros del script
 PARAM <- list()
-PARAM$experimento <- "AF017410"
+PARAM$experimento <- "AF027410"
 
-PARAM$exp_input <- "AF017310"
+PARAM$exp_input <- "AF027310"
 
 # me salteo los meses duros de pandemia, pero llego hasta 201907 en training
 # entreno en 18 meses
 
 PARAM$future <- c(202109)
 PARAM$final_train <- c(
-  201907, 201908, 201909, 201910, 201911, 201912, 202001, 202002, 202008, 202009, 202010, 202011, 202012,
-  202101, 202102, 202103, 202104, 202105
+  202107, 202105, 202103, 202102,
+  202101, 202012, 202011, 202010, 202009, 202008, 202002, 202001, 201912,
+  201911, 201910, 201909, 201908, 201907
 )
 
 PARAM$train$training <- c(
-  201903, 201904, 201905, 201906, 201907, 201908, 201909, 201910, 201911, 201912, 202001, 202002, 202008, 202009, 202010, 202011, 202012, 202101
+  202101, 202012, 202011, 202010, 
+  202009, 202008, 202002, 202001, 201912, 201911, 201910, 201909, 201908,
+  201907, 201906, 201905, 201904, 201903
 )
 
 PARAM$train$validation <- c(202102)
-PARAM$train$testing <- c(202103, 202104, 202105) # testeo 3 meses
+PARAM$train$testing <- c(202107, 202105, 202103)
 
-# Atencion  0.4  de  undersampling de la clase mayoritaria,  los CONTINUA
+# Atencion  0.1  de  undersampling de la clase mayoritaria,  los CONTINUA
 # 1.0 significa NO undersampling ,  0.1  es quedarse con el 10% de los CONTINUA
 PARAM$train$undersampling <- 0.1
 
@@ -84,16 +87,16 @@ setorder(dataset, foto_mes, numero_de_cliente)
 
 # grabo los datos del futuro
 fwrite(dataset[foto_mes %in% PARAM$future, ],
-  file = "dataset_future.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset_future.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 
 # grabo los datos donde voy a entrenar los Final Models
 fwrite(dataset[foto_mes %in% PARAM$final_train, ],
-  file = "dataset_train_final.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset_train_final.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 
 
@@ -109,7 +112,7 @@ dataset[, fold_train := 0L]
 dataset[
   foto_mes %in% PARAM$train$training &
     (azar <= PARAM$train$undersampling |
-      clase_ternaria %in% c("BAJA+1", "BAJA+2")),
+       clase_ternaria %in% c("BAJA+1", "BAJA+2")),
   fold_train := 1L
 ]
 
@@ -121,9 +124,9 @@ dataset[foto_mes %in% PARAM$train$testing, fold_test := 1L]
 
 
 fwrite(dataset[fold_train + fold_validate + fold_test >= 1, ],
-  file = "dataset_training.csv.gz",
-  logical01 = TRUE,
-  sep = ","
+       file = "dataset_training.csv.gz",
+       logical01 = TRUE,
+       sep = ","
 )
 
 #------------------------------------------------------------------------------
@@ -148,8 +151,8 @@ tb_campos <- as.data.table(list(
 ))
 
 fwrite(tb_campos,
-  file = "dataset_training.campos.txt",
-  sep = "\t"
+       file = "dataset_training.campos.txt",
+       sep = "\t"
 )
 
 #------------------------------------------------------------------------------
@@ -178,6 +181,6 @@ GrabarOutput()
 
 # dejo la marca final
 cat(format(Sys.time(), "%Y%m%d %H%M%S"), "\n",
-  file = "zRend.txt",
-  append = TRUE
+    file = "zRend.txt",
+    append = TRUE
 )
