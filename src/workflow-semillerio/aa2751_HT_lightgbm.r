@@ -27,9 +27,9 @@ options(error = function() {
 
 # Parametros del script
 PARAM <- list()
-PARAM$experimento <- "AF027510"
+PARAM$experimento <- "AF037510"
 
-PARAM$exp_input <- "AF027410"
+PARAM$exp_input <- "AF037410"
 
 # En caso que se haga cross validation, se usa esta cantidad de folds
 PARAM$lgb_crossvalidation_folds <- 5
